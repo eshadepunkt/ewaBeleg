@@ -1,38 +1,43 @@
 <template>
-  <div class="q-pa-md">
-    <q-list bordered separator>
-      <q-item
-        clickable
-        v-ripple
-        v-for="book in books"
-        :key="book.id"
-        @click="icon = true"
-      >
-        <q-item-section>
-          <q-item-label overline>{{ book.title }}</q-item-label>
-          <q-item-label>{{ book.author }} - {{ book.content }}</q-item-label>
-          <q-dialog v-model="icon">
-            <q-card>
-              <q-card-section class="row items-center q-pb-none">
-                <div class="text-h6">{{ book.title }}</div>
-                <q-space />
-                <q-btn icon="close" flat round dense v-close-popup />
-              </q-card-section>
+  <div class="q-pa-sm">
+    <q-item clickable v-ripple dense @click="icon = true">
+      <q-item-section avatar>
+        <q-avatar rounded>
+          <img :src="image" />
+        </q-avatar>
+      </q-item-section>
+      <q-item-section>
+        <q-item-label>{{ title }}</q-item-label>
+        <q-item-label caption lines="2">{{ subtitle }}</q-item-label>
+      </q-item-section>
 
-              <q-card-section>
-                {{ book.content }}
-              </q-card-section>
-            </q-card>
-          </q-dialog>
-        </q-item-section>
-      </q-item>
-    </q-list>
+      <q-item-section side top>
+        <q-item-label caption>{{ price }} </q-item-label>
+        <q-item-label caption>{{ isbn13 }} </q-item-label>
+      </q-item-section>
+    </q-item>
+    <q-dialog v-model="icon">
+      <q-card style="width: 600px; max-width: 70vw">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">{{ isbn13 }}</div>
+          <q-space />
+          <q-btn icon="close" flat round v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <q-img :src="image" sizes="100%">
+            <div class="absolute-bottom text-subtitle1 text-center">
+              <a :href="url">{{ title }}</a>
+            </div>
+          </q-img>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { Book } from './models';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'BookCard',
@@ -44,13 +49,22 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    books: {
-      type: Array as PropType<Book[]>,
-      default: () => [],
+    subtitle: {
+      type: String,
+      required: false,
     },
-
-    active: {
-      type: Boolean,
+    price: {
+      type: String,
+      required: true,
+    },
+    isbn13: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
+    url: {
+      type: String,
     },
   },
 });

@@ -8,8 +8,14 @@ export interface Meta {
 }
 
 export interface Book {
-  id: number;
   title: string;
-  author: string;
-  content: string;
+  subtitle: string;
+  isbn13: string;
+  price: string;
+  image: string;
+  url: string;
+}
+
+export default interface ResponseData {
+  data: Book[];
 }

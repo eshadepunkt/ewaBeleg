@@ -4,17 +4,24 @@
     <div class="q-ma-xl">
       <q-input
         bottom-slots
-        v-model="newBookTitle"
-        placeholder="Add new Book here."
+        v-model="lookingForBookTitle"
+        placeholder="Search for Booktitle or IBAN"
         counter
         maxlength="280"
       >
         <template v-slot:before>
-          <q-icon name="local_library" />
+          <q-icon name="search" />
         </template>
 
         <template v-slot:append>
-          <q-btn round dense flat icon="add" :disable="!newBookTitle" />
+          <q-btn
+            round
+            dense
+            flat
+            icon="add"
+            :disable="!lookingForBookTitle"
+            @click="retrieveBooksByTitle(lookingForBookTitle)"
+          />
         </template>
       </q-input>
       <div v-if="bookResponse !== undefined" class="q-ma-md">
@@ -34,7 +41,7 @@
         v-model="page"
         color="purple"
         :max="total"
-        :max-pages="total"
+        :max-pages="5"
         boundary-numbers
         @click="retrievePage(page.toString())"
       />
@@ -54,7 +61,7 @@ export default defineComponent({
   components: { Bookcard },
   data() {
     return {
-      newBookTitle: '',
+      lookingForBookTitle: '',
       responseAvailable: false,
       bookResponse: ref<ResponseData>(),
       page: 1,
@@ -130,8 +137,7 @@ export default defineComponent({
         .then((response: Response) => {
           this.bookResponse = response.data;
           this.page = parseInt(this.bookResponse.page);
-          this.total =
-            parseInt(this.bookResponse.total) / this.bookResponse.books.length;
+
           console.log('totals', response.data.total);
           console.log('array-length', response.data.books.length);
         })
@@ -140,10 +146,24 @@ export default defineComponent({
         });
     },
     retrievePage(page: string) {
-      BookDataService.getPageById(page)
+      BookDataService.searchByTitleAndPage(this.lookingForBookTitle, this.page)
         .then((response: Response) => {
           this.bookResponse = response.data;
           this.page = parseInt(this.bookResponse.page);
+          console.log('books: ', response.data.books);
+          console.log('response', response);
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+    retrieveBooksByTitle(title: string) {
+      BookDataService.searchByTitle(title)
+        .then((response: Response) => {
+          this.bookResponse = response.data;
+          this.page = parseInt(this.bookResponse.page);
+          this.total =
+            parseInt(this.bookResponse.total) / this.bookResponse.books.length;
           console.log('books: ', response.data.books);
           console.log('response', response);
         })

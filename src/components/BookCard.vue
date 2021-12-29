@@ -10,17 +10,17 @@
         <q-item-label>{{ title }}</q-item-label>
         <q-item-label caption lines="2">{{ subtitle }}</q-item-label>
       </q-item-section>
-      <q-item-section side top>
+      <q-item-section side middle>
         <q-item-label caption>{{ price }} </q-item-label>
         <q-item-label caption>{{ isbn13 }} </q-item-label>
       </q-item-section>
       <q-separator vertical class="q-ma-md"></q-separator>
-      <div class="">
+      <div>
         <q-item-section style="max-width: 4rem">
           <q-input outlined v-model="ordered" dense item-aligned />
         </q-item-section>
         <q-btn
-          color="accent"
+          color="positive"
           round
           dense
           flat
@@ -29,7 +29,7 @@
         />
 
         <q-btn
-          color="accent"
+          color="negative"
           round
           dense
           flat

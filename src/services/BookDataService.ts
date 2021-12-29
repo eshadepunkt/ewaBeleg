@@ -14,6 +14,12 @@ class BookDataService {
   getAll(): Promise<Response> {
     return http.get('/all');
   }
+  searchByTitle(title: string): Promise<Response> {
+    return http.get(`/search/${title}`);
+  }
+  searchByTitleAndPage(title: string, page: number): Promise<Response> {
+    return http.get(`/search/${title}/${page}`);
+  }
 }
 
 export default new BookDataService();

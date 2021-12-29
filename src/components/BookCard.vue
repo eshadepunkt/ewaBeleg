@@ -1,19 +1,52 @@
 <template>
-  <div class="q-pa-sm">
-    <q-item clickable v-ripple dense @click="icon = true">
+  <div class="q-pa-sm shadow-1">
+    <q-item clickable v-ripple dense>
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="image" />
         </q-avatar>
       </q-item-section>
-      <q-item-section>
+      <q-item-section @click="icon = true">
         <q-item-label>{{ title }}</q-item-label>
         <q-item-label caption lines="2">{{ subtitle }}</q-item-label>
       </q-item-section>
-
       <q-item-section side top>
         <q-item-label caption>{{ price }} </q-item-label>
         <q-item-label caption>{{ isbn13 }} </q-item-label>
+      </q-item-section>
+      <q-separator vertical class="q-ma-md"></q-separator>
+      <div class="">
+        <q-item-section style="max-width: 4rem">
+          <q-input outlined v-model="ordered" dense item-aligned />
+        </q-item-section>
+        <q-btn
+          color="accent"
+          round
+          dense
+          flat
+          icon="add_circle"
+          @click="addOrder()"
+        />
+
+        <q-btn
+          color="accent"
+          round
+          dense
+          flat
+          icon="remove_circle"
+          @click="removeOrder()"
+        />
+      </div>
+
+      <q-item-section side>
+        <q-btn
+          color="accent"
+          round
+          dense
+          flat
+          icon="shopping_cart"
+          @click="removeOrder()"
+        />
       </q-item-section>
     </q-item>
     <q-dialog v-model="icon">
@@ -42,7 +75,10 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'BookCard',
   data() {
-    return { icon: false };
+    return {
+      icon: false,
+      ordered: 0,
+    };
   },
   props: {
     title: {
@@ -65,6 +101,17 @@ export default defineComponent({
     },
     url: {
       type: String,
+    },
+  },
+  methods: {
+    addOrder() {
+      this.ordered++;
+      console.log('ordered: ', this.ordered);
+    },
+    removeOrder() {
+      if (this.ordered <= 0) return;
+      this.ordered--;
+      console.log('ordered: ', this.ordered);
     },
   },
 });

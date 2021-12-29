@@ -1,12 +1,3 @@
-export interface Todo {
-  id: number;
-  content: string;
-}
-
-export interface Meta {
-  totalCount: number;
-}
-
 export interface Book {
   title: string;
   subtitle: string;
@@ -16,6 +7,13 @@ export interface Book {
   url: string;
 }
 
-export default interface ResponseData {
-  data: Book[];
+export interface ResponseData {
+  books: Book[];
+  error: string;
+  total: string;
+  page: string;
+}
+
+export interface Response {
+  data: ResponseData;
 }

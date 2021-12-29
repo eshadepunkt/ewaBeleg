@@ -1,8 +1,6 @@
 <template>
   <q-page class="column">
-    <q-item
-      ><h5>{{ $route.name }}</h5></q-item
-    >
+    <q-item class="text-h4 text-secondary">{{ $route.name }}</q-item>
     <div class="q-ma-xl">
       <q-input
         bottom-slots
@@ -16,25 +14,30 @@
         </template>
 
         <template v-slot:append>
-          <q-btn
-            round
-            dense
-            flat
-            icon="add"
-            :disable="!newBookTitle"
-            @click="addBook(newBookTitle)"
-          />
+          <q-btn round dense flat icon="add" :disable="!newBookTitle" />
         </template>
       </q-input>
-      <bookcard
-        v-for="(book, index) in books.books"
-        v-bind:key="index"
-        :title="book.title"
-        :subtitle="book.subtitle"
-        :isbn13="book.isbn13"
-        :price="book.price"
-        :image="book.image"
-      ></bookcard>
+      <div v-if="bookResponse !== undefined" class="q-ma-md">
+        <bookcard
+          v-for="(book, index) in bookResponse.books"
+          v-bind:key="index"
+          :title="book.title"
+          :subtitle="book.subtitle"
+          :isbn13="book.isbn13"
+          :price="book.price"
+          :image="book.image"
+        ></bookcard>
+      </div>
+    </div>
+    <div class="q-pa-lg flex flex-center">
+      <q-pagination
+        v-model="page"
+        color="purple"
+        :max="total"
+        :max-pages="total"
+        boundary-numbers
+        @click="retrievePage(page.toString())"
+      />
     </div>
   </q-page>
 </template>
@@ -42,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Bookcard from 'components/BookCard.vue';
-import ResponseData, { Book } from 'components/models';
+import { Response, ResponseData } from 'components/models';
 import BookDataService from 'src/services/BookDataService';
 
 export default defineComponent({
@@ -53,7 +56,9 @@ export default defineComponent({
     return {
       newBookTitle: '',
       responseAvailable: false,
-      books: [] as Book[],
+      bookResponse: ref<ResponseData>(),
+      page: 1,
+      total: 1,
     };
   },
   created() {
@@ -107,27 +112,44 @@ export default defineComponent({
   methods: {
     retrieveNewBooks() {
       BookDataService.getNew()
-        .then((response: ResponseData) => {
-          this.books = response.data;
-          console.log(response.data);
-          console.log(this.books);
+        .then((response: Response) => {
+          this.bookResponse = response.data;
+          this.page = parseInt(this.bookResponse.page);
+          this.total =
+            parseInt(this.bookResponse.total) / this.bookResponse.books.length;
+          console.log('totals', response.data.total);
+          console.log('array-length', response.data.books.length);
         })
         .catch((e: Error) => {
           console.log(e);
         });
     },
 
-    //TODO fix this method!
-    addBook(_title: string) {
-      var book = ref<Book>({
-        title: _title,
-        subtitle: 'subtitle',
-        isbn13: '1234567891234',
-        price: '10.99',
-        image: 'image',
-        url: 'img',
-      });
-      this.books.push(book.value);
+    retrieveAllBooks() {
+      BookDataService.getAll()
+        .then((response: Response) => {
+          this.bookResponse = response.data;
+          this.page = parseInt(this.bookResponse.page);
+          this.total =
+            parseInt(this.bookResponse.total) / this.bookResponse.books.length;
+          console.log('totals', response.data.total);
+          console.log('array-length', response.data.books.length);
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+    retrievePage(page: string) {
+      BookDataService.getPageById(page)
+        .then((response: Response) => {
+          this.bookResponse = response.data;
+          this.page = parseInt(this.bookResponse.page);
+          console.log('books: ', response.data.books);
+          console.log('response', response);
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
     },
   },
   mounted() {

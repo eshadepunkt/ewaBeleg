@@ -17,13 +17,14 @@ const mutation: MutationTree<ICart> = {
   },
   UPDATE_CART_ORDER(state: ICart, payload: Order) {
     console.log('Updating order:', payload);
-    state.cartItems.map((order) => {
+    state.cartItems = state.cartItems.map((order) => {
       if (order.item.isbn13 === payload.item.isbn13) {
         console.log('Update');
         return payload;
       }
       return order;
     });
+    state.cartItems = state.cartItems.filter((order) => {return order.quantity > 0})
   },
 };
 

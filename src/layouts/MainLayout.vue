@@ -61,7 +61,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { ref } from 'vue';
-import ShoppingCart from 'src/components/shoppingCart.vue';
+import ShoppingCart from 'src/components/ShoppingCart.vue';
 
 export default {
   name: 'MainLayout',

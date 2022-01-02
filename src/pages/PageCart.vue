@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { Order } from 'src/components/models';
-import ShoppingCart from 'src/components/shoppingCart.vue';
+import ShoppingCart from 'src/components/ShoppingCart.vue';
 import { mapGetters } from 'vuex';
 export default defineComponent({
   name: 'PageCart',

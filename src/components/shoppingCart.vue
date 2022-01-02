@@ -28,7 +28,7 @@
 
         <div>
           <q-item-section style="max-width: 3rem">
-            <q-input v-model="quantity" outlined dense borderless />
+            <q-input v-model="quantity" outlined dense borderless @change="updateOrder()" />
           </q-item-section>
           <q-btn
             color="positive"
@@ -63,37 +63,38 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { Order } from 'src/components/models';
+import { Order } from './models';
 export default defineComponent({
   name: 'ShoppingCart',
   data() {
     return {
       icon: false,
+      quantity: this.cartItem.quantity
     };
-  },
-  computed: {
-    quantity: function () {
-      return this.cartItem.quantity;
-    },
-  },
-  created() {
-    console.log('Creating cart component: ', this.cartItem);
   },
   methods: {
     addOrder() {
+      this.quantity++;
       let order: Order = { ...this.cartItem };
-      order.quantity++;
-      console.log(order);
+      order.quantity = this.quantity;
       void this.$store.dispatch('cart/updateOrder', order);
     },
     removeOrder() {
       if (this.quantity === 0) return;
+      this.quantity--;
       let order: Order = { ...this.cartItem };
-      order.quantity--;
+      order.quantity = this.quantity;
       void this.$store.dispatch('cart/updateOrder', order);
     },
     updateOrder() {
-      console.log(this.quantity);
+      const count = Number(this.quantity);
+      if (isNaN(count) || count === 0) {
+        this.quantity = 0; 
+        return;
+      }
+      let order: Order = { ...this.cartItem };
+      order.quantity = count;
+      void this.$store.dispatch('cart/updateOrder', order);
     },
   },
   components: {},

@@ -1,7 +1,6 @@
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import { ICart } from './state';
-import { Order } from 'src/components/models';
 
 const getters: GetterTree<ICart, StateInterface> = {
   cartItems: (state) => state.cartItems,

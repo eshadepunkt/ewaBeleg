@@ -1,6 +1,6 @@
 <template>
-  <div class="shadow-1">
-    <q-item clickable v-ripple dense>
+  <div class="q-pa-sm shadow-1">
+    <q-item clickable>
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="cartItem.item.image" />
@@ -15,9 +15,51 @@
         }}</q-item-label>
       </q-item-section>
       <q-item-section side middle>
-        <q-item-label caption>{{ cartItem.item.price }} </q-item-label>
+        <q-item-label caption>
+          {{ (parseFloat(cartItem.item.price.substring(1)) * cartItem.quantity).toFixed(2) }}
+        </q-item-label>
+        <q-item-label caption>{{ cartItem.item.isbn13 }} </q-item-label>
+      </q-item-section>
+      <q-separator vertical class="q-ma-md"></q-separator>
+      <div>
+        <q-item-section style="max-width: 3rem">
+          <q-input
+            v-model="quantity"
+            outlined
+            dense
+            borderless
+            @change="updateOrder()"
+          />
+        </q-item-section>
+        <q-btn
+          color="positive"
+          round
+          dense
+          flat
+          icon="add_circle"
+          @click="addOrder()"
+        />
+
+        <q-btn
+          color="negative"
+          round
+          dense
+          flat
+          icon="remove_circle"
+          @click="removeOrder()"
+        />
+      </div>
+      <q-separator vertical class="q-ma-md"></q-separator>
+      <q-item-section side>
+        <q-btn
+          color="negative"
+          flat
+          icon="clear"
+          @click="deleteOrder()"
+        />
       </q-item-section>
     </q-item>
+
     <q-dialog v-model="icon">
       <q-card style="width: 600px; max-width: 70vw">
         <q-card-section class="row items-center q-pb-none">
@@ -25,29 +67,6 @@
           <q-space />
           <q-btn icon="close" flat round v-close-popup />
         </q-card-section>
-
-        <div>
-          <q-item-section style="max-width: 3rem">
-            <q-input v-model="quantity" outlined dense borderless @change="updateOrder()" />
-          </q-item-section>
-          <q-btn
-            color="positive"
-            round
-            dense
-            flat
-            icon="add_circle"
-            @click="addOrder()"
-          />
-
-          <q-btn
-            color="negative"
-            round
-            dense
-            flat
-            icon="remove_circle"
-            @click="removeOrder()"
-          />
-        </div>
 
         <q-card-section>
           <q-img :src="cartItem.item.image" sizes="100%">
@@ -62,14 +81,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { Order } from './models';
 export default defineComponent({
-  name: 'ShoppingCart',
+  name: 'ShoppingCartItem',
   data() {
     return {
       icon: false,
-      quantity: this.cartItem.quantity
+      quantity: this.cartItem.quantity,
     };
   },
   methods: {
@@ -89,15 +108,17 @@ export default defineComponent({
     updateOrder() {
       const count = Number(this.quantity);
       if (isNaN(count) || count === 0) {
-        this.quantity = 0; 
+        this.quantity = 0;
         return;
       }
       let order: Order = { ...this.cartItem };
       order.quantity = count;
       void this.$store.dispatch('cart/updateOrder', order);
     },
+    deleteOrder() {
+      void this.$store.dispatch('cart/deleteOrder', this.cartItem.item.isbn13);
+    },
   },
-  components: {},
   props: { cartItem: { type: Order, required: true } },
 });
 </script>

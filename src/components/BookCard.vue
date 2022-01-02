@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-sm shadow-1">
-    <q-item clickable v-ripple dense>
+    <q-item clickable dense>
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="productItem.image" />
@@ -8,9 +8,7 @@
       </q-item-section>
       <q-item-section @click="icon = true">
         <q-item-label>{{ productItem.title }}</q-item-label>
-        <q-item-label caption lines="2">{{
-          productItem.subtitle
-        }}</q-item-label>
+        <q-item-label caption lines="2">{{ productItem.subtitle }}</q-item-label>
       </q-item-section>
       <q-item-section side middle>
         <q-item-label caption>{{ productItem.price }} </q-item-label>
@@ -72,9 +70,8 @@
 </template>
 
 <script lang="ts">
-import { Guid } from 'guid-typescript';
-import { defineComponent, ref } from 'vue';
-import { IOrder, Book, Order } from './models';
+import { defineComponent } from 'vue';
+import { Order } from './models';
 
 export default defineComponent({
   name: 'BookCard',
@@ -96,7 +93,7 @@ export default defineComponent({
     addOrderToCart() {
       if (this.productItem === null) return;
       const count = Number(this.ordered);
-      if (isNaN(count) || count === 0) return;
+      if (isNaN(count) || count <= 0) return;
       const newOrder = new Order(this.productItem, count);
 
       void this.$store.dispatch('cart/addOrder', newOrder);

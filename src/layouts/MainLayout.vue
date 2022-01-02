@@ -20,11 +20,11 @@
         <q-route-tab to="/home" label="Home" />
         <q-route-tab to="/catalogue" label="Catalogue" />
 
-        <q-route-tab v-if="quantity > 0" to="/cart" label="Shopping Cart"
-          ><q-badge color="orange" floating>{{
-            quantity
-          }}</q-badge></q-route-tab
-        >
+        <q-route-tab to="/cart" label="Shopping Cart">
+          <q-badge v-if="quantity > 0" color="orange" floating>
+            {{ quantity }}
+          </q-badge>
+        </q-route-tab>
         <q-route-tab to="/help" label="Help" />
       </q-tabs>
     </q-header>
@@ -45,7 +45,7 @@
           <q-list>
             <q-item-label header> Total: ${{ total }} </q-item-label>
             <q-item v-for="(item, index) in items" :key="index">
-              <shopping-cart :cartItem="item" />
+              <side-cart-item :cartItem="item" />
             </q-item>
           </q-list>
         </q-card>
@@ -61,18 +61,17 @@
 <script>
 import { mapGetters } from 'vuex';
 import { ref } from 'vue';
-import ShoppingCart from 'src/components/ShoppingCart.vue';
+import SideCartItem from '../components/SideCartItem.vue';
 
 export default {
   name: 'MainLayout',
-  components: { ShoppingCart },
+  components: { SideCartItem },
   computed: {
     ...mapGetters({
       items: 'cart/cartItems',
       total: 'cart/cartTotal',
       quantity: 'cart/cartQuantity',
     }),
-    // ...mapGetters('items', ['cart/cartItems']),
   },
   setup() {
     const leftDrawerOpen = ref(false);

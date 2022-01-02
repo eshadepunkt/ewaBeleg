@@ -1,3 +1,5 @@
+import { Guid } from 'guid-typescript';
+
 export interface Book {
   title: string;
   subtitle: string;
@@ -18,13 +20,30 @@ export interface Response {
   data: ResponseData;
 }
 
-export interface Order {
+export interface IOrder {
   id: string;
   item: Book;
   quantity: number;
 }
 
-export interface ShoppingCart {
+export interface IShoppingCart {
   id: string;
-  orders: Order[];
+  orders: IOrder[];
+
+  getId(): string;
+  addOrder: (order: IOrder) => void;
+  removeOrder: (order: IOrder) => void;
+  checkOut: () => void;
+}
+
+export class Order implements IOrder {
+  id: string;
+  item: Book;
+  quantity: number;
+
+  constructor(item: Book, quantity: number) {
+    this.id = Guid.create().toString();
+    this.item = item;
+    this.quantity = quantity;
+  }
 }

@@ -1,8 +1,6 @@
 <template>
-  <q-page class="column"
-    ><q-item
-      ><h5>{{ $route.name }}</h5></q-item
-    >
+  <q-page class="column">
+    <q-item class="text-h4 text-secondary">{{ $route.name }}</q-item>
   </q-page>
 </template>
 

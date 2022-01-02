@@ -18,23 +18,17 @@
             round
             dense
             flat
-            icon="add"
+            icon="search"
             :disable="!lookingForBookTitle"
             @click="retrieveBooksByTitle(lookingForBookTitle)"
           />
         </template>
       </q-input>
-      <div v-if="bookResponse !== undefined" class="q-ma-md">
-        <bookcard
-          v-for="(book, index) in bookResponse.books"
-          v-bind:key="index"
-          :title="book.title"
-          :subtitle="book.subtitle"
-          :isbn13="book.isbn13"
-          :price="book.price"
-          :image="book.image"
-        ></bookcard>
-      </div>
+      <bookcard
+        v-for="(book, index) in products"
+        v-bind:key="index"
+        :product-item="book"
+      ></bookcard>
     </div>
     <div class="q-pa-lg flex flex-center">
       <q-pagination
@@ -54,6 +48,7 @@ import { defineComponent, ref } from 'vue';
 import Bookcard from 'components/BookCard.vue';
 import { Response, ResponseData } from 'components/models';
 import BookDataService from 'src/services/BookDataService';
+import { mapGetters } from 'vuex';
 
 export default defineComponent({
   name: ' PageCatalog',
@@ -69,83 +64,17 @@ export default defineComponent({
     };
   },
   created() {
-    // fetch('https://api.itbook.store/1.0/new', {
-    //   method: 'GET',
-    //   headers: { 'Content-Type': 'application/json' },
-    // })
-    //   .then((response) => {
-    //     if (response.ok) {
-    //       return response.json();
-    //     } else {
-    //       console.log(response);
-    //     }
-    //   })
-    //   .then((response: ResponseData) => {
-    //     this.books = response.data;
-    //     //this.responseAvailable = true;
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  },
-  setup() {
-    // function getNewBooks(): Promise<Book[]> {
-    //   return fetch('https://api.itbook.store/1.0/new')
-    //     .then((res) => res.json())
-    //     .then((res) => {
-    //       return res as Book[];
-    //     });
-    // }
-    // const books = ref<Book[]>([
-    //   {
-    //     id: 0,
-    //     title: 'Mein erstes Buch',
-    //     author: 'Mein erster Autor',
-    //     content:
-    //       'Hier steht eine Kurze Beschreibung des Buches das angezeigt wird',
-    //   },
-    //   {
-    //     id: 1,
-    //     title: 'Mein zweites Buch',
-    //     author: 'Mein zweites Autor',
-    //     content:
-    //       'Hier steht eine Kurze Beschreibung des Buches das angezeigt wird (2)',
-    //   },
-    // ]);
-    // console.log(books);
-    // return { books };
+    this.retrieveNewBooks();
   },
 
+  computed: {
+    ...mapGetters({ products: 'products/productItems' }),
+  },
   methods: {
     retrieveNewBooks() {
-      BookDataService.getNew()
-        .then((response: Response) => {
-          this.bookResponse = response.data;
-          this.page = parseInt(this.bookResponse.page);
-          this.total =
-            parseInt(this.bookResponse.total) / this.bookResponse.books.length;
-          console.log('totals', response.data.total);
-          console.log('array-length', response.data.books.length);
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
+      void this.$store.dispatch('products/getNewProductItems');
     },
-
-    retrieveAllBooks() {
-      BookDataService.getAll()
-        .then((response: Response) => {
-          this.bookResponse = response.data;
-          this.page = parseInt(this.bookResponse.page);
-
-          console.log('totals', response.data.total);
-          console.log('array-length', response.data.books.length);
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
-    },
-    retrievePage(page: string) {
+    retrievePage() {
       BookDataService.searchByTitleAndPage(this.lookingForBookTitle, this.page)
         .then((response: Response) => {
           this.bookResponse = response.data;
@@ -162,8 +91,9 @@ export default defineComponent({
         .then((response: Response) => {
           this.bookResponse = response.data;
           this.page = parseInt(this.bookResponse.page);
-          this.total =
-            parseInt(this.bookResponse.total) / this.bookResponse.books.length;
+          this.total = Math.floor(
+            parseInt(this.bookResponse.total) / this.bookResponse.books.length
+          );
           console.log('books: ', response.data.books);
           console.log('response', response);
         })
@@ -171,9 +101,6 @@ export default defineComponent({
           console.log(e);
         });
     },
-  },
-  mounted() {
-    this.retrieveNewBooks();
   },
 });
 </script>

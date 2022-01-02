@@ -1,8 +1,7 @@
 <template>
   <q-page class="column">
-    <q-item
-      ><h5>{{ $route.name }}</h5></q-item
-    >
+    <q-item class="text-h4 text-secondary">{{ $route.name }}</q-item>
+
     <q-item clickable v-ripple>
       <q-item-section side>
         <q-avatar rounded size="48px">

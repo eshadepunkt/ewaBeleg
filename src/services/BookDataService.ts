@@ -11,9 +11,6 @@ class BookDataService {
   getPageById(id: string): Promise<Response> {
     return http.get(`/all?page=${id}`);
   }
-  getAll(): Promise<Response> {
-    return http.get('/all');
-  }
   searchByTitle(title: string): Promise<Response> {
     return http.get(`/search/${title}`);
   }

@@ -2,7 +2,11 @@
   <q-layout view="hHh lpR lFf">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer">
+          <q-badge v-if="!leftDrawerOpen" color="orange" floating>{{
+            quantity
+          }}</q-badge></q-btn
+        >
 
         <q-toolbar-title>
           <q-avatar>
@@ -15,12 +19,37 @@
       <q-tabs align="left">
         <q-route-tab to="/home" label="Home" />
         <q-route-tab to="/catalogue" label="Catalogue" />
+
+        <q-route-tab v-if="quantity > 0" to="/cart" label="Shopping Cart"
+          ><q-badge color="orange" floating>{{
+            quantity
+          }}</q-badge></q-route-tab
+        >
         <q-route-tab to="/help" label="Help" />
       </q-tabs>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+      <q-expansion-item
+        expand-separator
+        icon="shopping_cart"
+        label="Shopping Cart"
+        header-class="text-secondary"
+        :caption="
+          quantity > 0
+            ? quantity + (quantity > 1 ? ' items' : ' item') + ' in cart'
+            : 'no items in cart'
+        "
+      >
+        <q-card>
+          <q-list>
+            <q-item-label header> Total: ${{ total }} </q-item-label>
+            <q-item v-for="(item, index) in items" :key="index">
+              <shopping-cart :cartItem="item" />
+            </q-item>
+          </q-list>
+        </q-card>
+      </q-expansion-item>
     </q-drawer>
 
     <q-page-container>
@@ -30,12 +59,23 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { ref } from 'vue';
+import ShoppingCart from 'src/components/shoppingCart.vue';
 
 export default {
+  name: 'MainLayout',
+  components: { ShoppingCart },
+  computed: {
+    ...mapGetters({
+      items: 'cart/cartItems',
+      total: 'cart/cartTotal',
+      quantity: 'cart/cartQuantity',
+    }),
+    // ...mapGetters('items', ['cart/cartItems']),
+  },
   setup() {
     const leftDrawerOpen = ref(false);
-
     return {
       leftDrawerOpen,
       toggleLeftDrawer() {

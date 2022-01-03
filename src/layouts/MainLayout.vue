@@ -50,8 +50,12 @@
         <q-card>
           <q-list>
             <q-item-label header> Total: ${{ total }} </q-item-label>
-            <q-item v-for="(item, index) in items" :key="index">
-              <side-cart-item :cartItem="item" />
+            <q-item
+              class="q-mb-sm no-padding"
+              v-for="(item, index) in items"
+              :key="index"
+            >
+              <side-cart-item :cartItem="item" class="full-width" />
             </q-item>
           </q-list>
         </q-card>

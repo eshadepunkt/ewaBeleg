@@ -199,19 +199,15 @@ export default defineComponent({
       const count = Number(this.cartQuantity);
       if (isNaN(count) || count === 0) {
         this.cartQuantity = 0;
-        console.log('zeroed');
         return;
       }
       let quantity: number = this.quantity;
 
       let order: Order = { ...this.cartItem };
-      console.log('order new: ', order);
-      console.log('order old', this.cartItem);
+
       order.quantity = Number(quantity);
-      console.log('order quantity: ', order.quantity);
-      console.log('order: ', order);
+
       void this.$store.dispatch('cart/updateOrder', order);
-      console.log('items: ', this.items);
     },
     deleteOrder() {
       void this.$store.dispatch('cart/deleteOrder', this.cartItem.item.isbn13);

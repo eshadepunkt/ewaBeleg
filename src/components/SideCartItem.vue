@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow-1">
+  <div class="">
     <q-item dense clickable to="/cart" exact-active-class="mytest">
       <q-item-section avatar>
         <q-avatar rounded>

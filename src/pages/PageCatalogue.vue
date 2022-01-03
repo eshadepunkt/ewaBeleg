@@ -24,6 +24,7 @@
           />
         </template>
       </q-input>
+
       <bookcard
         v-for="(book, index) in products"
         v-bind:key="index"
@@ -45,10 +46,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import Bookcard from 'components/BookCard.vue';
+import { mapGetters } from 'vuex';
 import { Response, ResponseData } from 'components/models';
 import BookDataService from 'src/services/BookDataService';
-import { mapGetters } from 'vuex';
+import Bookcard from 'components/BookCard.vue';
 
 export default defineComponent({
   name: ' PageCatalog',
@@ -73,6 +74,7 @@ export default defineComponent({
   methods: {
     retrieveNewBooks() {
       void this.$store.dispatch('products/getNewProductItems');
+      console.log(this.products);
     },
     retrievePage() {
       BookDataService.searchByTitleAndPage(this.lookingForBookTitle, this.page)

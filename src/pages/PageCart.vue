@@ -1,20 +1,24 @@
 <template>
-  <q-list>
+  <q-page class="column">
     <q-item class="text-h4 text-secondary">{{ $route.name }}</q-item>
+    <div class="q-ma-sm">
+      <q-item-section>
+        <q-item v-for="item in items" :key="item.id">
+          <shopping-cart-item class="q-pa-md" :cartItem="item" />
+        </q-item>
+      </q-item-section>
 
-    <q-item v-for="item in items" :key="item.id">
-      <shopping-cart-item class="q-pa-md" :cartItem="item" />
-    </q-item>
-    <q-item-label header v-if="quantity > 0">
-      Total: ${{ total }}
-    </q-item-label>
-    <q-item-label header v-if="quantity == 0">
-      <p>No items in Cart.</p>
-      <p v-if="items.length == 0">
-        You may find some <a href="#/catalogue">here</a>.
-      </p>
-    </q-item-label>
-  </q-list>
+      <q-item-label header v-if="quantity > 0">
+        Total: ${{ total }}
+      </q-item-label>
+      <q-item-label header v-if="quantity == 0">
+        <p>No items in Cart.</p>
+        <p v-if="items.length == 0">
+          You may find some <a href="#/catalogue">here</a>.
+        </p>
+      </q-item-label>
+    </div>
+  </q-page>
 </template>
 
 <script lang="ts">

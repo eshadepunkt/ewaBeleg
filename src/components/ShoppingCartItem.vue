@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-sm shadow-1">
-    <q-item clickable>
+    <q-item clickable dense>
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="cartItem.item.image" />
@@ -16,7 +16,11 @@
       </q-item-section>
       <q-item-section side middle>
         <q-item-label caption>
-          {{ (parseFloat(cartItem.item.price.substring(1)) * cartItem.quantity).toFixed(2) }}
+          ${{
+            (
+              parseFloat(cartItem.item.price.substring(1)) * cartItem.quantity
+            ).toFixed(2)
+          }}
         </q-item-label>
         <q-item-label caption>{{ cartItem.item.isbn13 }} </q-item-label>
       </q-item-section>
@@ -51,15 +55,10 @@
       </div>
       <q-separator vertical class="q-ma-md"></q-separator>
       <q-item-section side>
-        <q-btn
-          color="negative"
-          flat
-          icon="clear"
-          @click="deleteOrder()"
-        />
+        <q-btn color="negative" flat icon="clear" @click="confirm = true" />
       </q-item-section>
     </q-item>
-
+    <!-- Open Item Dialog-->
     <q-dialog v-model="icon">
       <q-card style="width: 600px; max-width: 70vw">
         <q-card-section class="row items-center q-pb-none">
@@ -77,33 +76,74 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <!-- Open Confirmation-->
+    <q-dialog v-model="confirm" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar
+            icon="question_mark"
+            color="primary"
+            text-color="white"
+          /><span class="q-ma-sm text-h6">{{ cartItem.item.title }}</span
+          ><q-img :src="cartItem.item.image" style="max-width: 200px"></q-img>
+          <p class="q-ma-sm">Do you really want remove this item?</p>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Delete"
+            color="warning"
+            v-close-popup
+            @click="deleteOrder()"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import { mapGetters } from 'vuex';
 import { Order } from './models';
 export default defineComponent({
   name: 'ShoppingCartItem',
   data() {
     return {
       icon: false,
-      quantity: this.cartItem.quantity,
+      confirm: ref(false),
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      items: 'cart/cartItems',
+      total: 'cart/cartTotal',
+      quantity: 'cart/cartQuantity',
+    }),
   },
   methods: {
     addOrder() {
-      this.quantity++;
+      let quantity: number = this.quantity as number;
+      quantity++;
+      console.log(quantity);
       let order: Order = { ...this.cartItem };
-      order.quantity = this.quantity;
+      console.log(this.quantity as number);
+      order.quantity = quantity;
       void this.$store.dispatch('cart/updateOrder', order);
+      console.log(order);
     },
     removeOrder() {
       if (this.quantity === 0) return;
-      this.quantity--;
+      let quantity: number = this.quantity as number;
+      quantity--;
+      console.log(quantity);
       let order: Order = { ...this.cartItem };
-      order.quantity = this.quantity;
-      void this.$store.dispatch('cart/updateOrder', order);
+      order.quantity = quantity;
+      if (quantity === 0) this.deleteOrder();
+      else void this.$store.dispatch('cart/updateOrder', order);
     },
     updateOrder() {
       const count = Number(this.quantity);

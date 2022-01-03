@@ -29,8 +29,14 @@
       </q-tabs>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      v-if="quantity > 0"
+    >
       <q-expansion-item
+        model-value="expansion"
         expand-separator
         icon="shopping_cart"
         label="Shopping Cart"
@@ -75,8 +81,10 @@ export default {
   },
   setup() {
     const leftDrawerOpen = ref(false);
+    const expansion = ref(false);
     return {
       leftDrawerOpen,
+      expansion,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },

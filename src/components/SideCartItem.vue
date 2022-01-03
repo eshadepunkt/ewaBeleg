@@ -1,6 +1,6 @@
 <template>
   <div class="shadow-1">
-    <q-item dense clickable to="/cart">
+    <q-item dense clickable to="/cart" exact-active-class="mytest">
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="cartItem.item.image" />
@@ -28,7 +28,7 @@ export default defineComponent({
   name: 'SideCartItem',
   data() {
     return {
-      //quantity: this.cartItem.quantity
+      //quantity: this.cartItem.quantity,
     };
   },
   computed: {

@@ -4,7 +4,7 @@
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="cartItem.item.image" />
-          <q-badge color="orange" floating>{{ quantity }}</q-badge>
+          <q-badge color="orange" floating>{{ cartItem.quantity }}</q-badge>
         </q-avatar>
       </q-item-section>
 
@@ -24,9 +24,9 @@
         </q-item-label>
         <q-item-label caption>{{ cartItem.item.isbn13 }} </q-item-label>
       </q-item-section>
-      <q-separator vertical class="q-ma-md"></q-separator>
-      <div>
-        <q-item-section style="max-width: 3rem">
+      <q-separator vertical class="q-ma-sm q-ml-xl"></q-separator>
+      <div class="">
+        <!-- <q-item-section style="max-width: 3rem">
           <q-input
             v-model="quantity"
             outlined
@@ -51,12 +51,51 @@
           flat
           icon="remove_circle"
           @click="removeOrder()"
-        />
+        /> -->
+
+        <q-btn-group push>
+          <q-btn
+            color="primary"
+            glossy
+            text-color="black"
+            push
+            label="Add"
+            icon="add_circle"
+            @click="addOrder()"
+          />
+          <div style="max-width: 3rem">
+            <q-input
+              v-model="quantity"
+              outlined
+              dense
+              borderless
+              @change="updateOrder()"
+            />
+          </div>
+          <q-btn
+            color="warning"
+            glossy
+            text-color="black"
+            push
+            label="Remove"
+            icon-right="remove_circle"
+            @click="removeOrder()"
+          />
+          <q-btn
+            color="red"
+            glossy
+            text-color="black"
+            push
+            label="Clear"
+            icon-right="clear"
+            @click="confirm = true"
+          />
+        </q-btn-group>
       </div>
-      <q-separator vertical class="q-ma-md"></q-separator>
+      <!-- <q-separator vertical class="q-ma-md"></q-separator>
       <q-item-section side>
         <q-btn color="negative" flat icon="clear" @click="confirm = true" />
-      </q-item-section>
+      </q-item-section> -->
     </q-item>
     <!-- Open Item Dialog-->
     <q-dialog v-model="icon">
@@ -90,7 +129,13 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Cancel"
+            color="primary"
+            v-close-popup
+            @click="confirm = false"
+          />
           <q-btn
             flat
             label="Delete"
@@ -114,6 +159,7 @@ export default defineComponent({
     return {
       icon: false,
       confirm: ref(false),
+      quantity: this.cartItem.quantity,
     };
   },
 
@@ -121,39 +167,51 @@ export default defineComponent({
     ...mapGetters({
       items: 'cart/cartItems',
       total: 'cart/cartTotal',
-      quantity: 'cart/cartQuantity',
+      cartQuantity: 'cart/cartQuantity',
+      products: 'products/productItems',
     }),
   },
   methods: {
     addOrder() {
-      let quantity: number = this.quantity as number;
+      let quantity: number = this.cartItem.quantity;
       quantity++;
-      console.log(quantity);
+      this.quantity++;
       let order: Order = { ...this.cartItem };
-      console.log(this.quantity as number);
+
       order.quantity = quantity;
       void this.$store.dispatch('cart/updateOrder', order);
       console.log(order);
     },
     removeOrder() {
-      if (this.quantity === 0) return;
-      let quantity: number = this.quantity as number;
+      if (this.quantity === 0) this.confirm = true;
+      if (this.cartQuantity === 0) return;
+      let quantity: number = this.cartItem.quantity;
       quantity--;
-      console.log(quantity);
+      this.quantity--;
       let order: Order = { ...this.cartItem };
       order.quantity = quantity;
-      if (quantity === 0) this.deleteOrder();
-      else void this.$store.dispatch('cart/updateOrder', order);
+      if (quantity === 0) {
+        this.confirm = true;
+      }
+      void this.$store.dispatch('cart/updateOrder', order);
     },
     updateOrder() {
-      const count = Number(this.quantity);
+      const count = Number(this.cartQuantity);
       if (isNaN(count) || count === 0) {
-        this.quantity = 0;
+        this.cartQuantity = 0;
+        console.log('zeroed');
         return;
       }
+      let quantity: number = this.quantity;
+
       let order: Order = { ...this.cartItem };
-      order.quantity = count;
+      console.log('order new: ', order);
+      console.log('order old', this.cartItem);
+      order.quantity = Number(quantity);
+      console.log('order quantity: ', order.quantity);
+      console.log('order: ', order);
       void this.$store.dispatch('cart/updateOrder', order);
+      console.log('items: ', this.items);
     },
     deleteOrder() {
       void this.$store.dispatch('cart/deleteOrder', this.cartItem.item.isbn13);

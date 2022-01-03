@@ -4,7 +4,7 @@
     <div class="q-ma-sm">
       <q-item-section>
         <q-item v-for="item in items" :key="item.id">
-          <shopping-cart-item class="q-pa-md" :cartItem="item" />
+          <shopping-cart-item class="q-pa-md full-width" :cartItem="item" />
         </q-item>
       </q-item-section>
 

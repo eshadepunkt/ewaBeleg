@@ -167,7 +167,6 @@ export default defineComponent({
     ...mapGetters({
       items: 'cart/cartItems',
       total: 'cart/cartTotal',
-      cartQuantity: 'cart/cartQuantity',
       products: 'products/productItems',
     }),
   },
@@ -183,8 +182,10 @@ export default defineComponent({
       console.log(order);
     },
     removeOrder() {
-      if (this.quantity === 0) this.confirm = true;
-      if (this.cartQuantity === 0) return;
+      if (this.quantity === 0) {
+        this.confirm = true;
+        return;
+      }
       let quantity: number = this.cartItem.quantity;
       quantity--;
       this.quantity--;
@@ -196,10 +197,9 @@ export default defineComponent({
       void this.$store.dispatch('cart/updateOrder', order);
     },
     updateOrder() {
-      const count = Number(this.cartQuantity);
-      if (isNaN(count) || count === 0) {
-        this.cartQuantity = 0;
-        return;
+      const count = Number(this.quantity);
+      if (isNaN(count) || count <= 0) {
+        this.quantity = 0;
       }
       let quantity: number = this.quantity;
 

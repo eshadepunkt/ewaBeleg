@@ -53,21 +53,19 @@
           @click="removeOrder()"
         /> -->
 
-        <q-btn-group push>
+        <q-btn-group>
           <q-btn
             color="primary"
             glossy
             text-color="black"
-            push
             label="Add"
             icon="add_circle"
             @click="addOrder()"
           />
-          <div style="max-width: 3rem">
+          <div style="max-width: 3rem" class="no-padding">
             <q-input
               v-model="quantity"
-              outlined
-              dense
+              input-class="text-center"
               borderless
               @change="updateOrder()"
             />
@@ -76,7 +74,6 @@
             color="warning"
             glossy
             text-color="black"
-            push
             label="Remove"
             icon-right="remove_circle"
             @click="removeOrder()"
@@ -85,7 +82,6 @@
             color="red"
             glossy
             text-color="black"
-            push
             label="Clear"
             icon-right="clear"
             @click="confirm = true"
@@ -201,11 +197,11 @@ export default defineComponent({
       if (isNaN(count) || count <= 0) {
         this.quantity = 0;
       }
-      let quantity: number = this.quantity;
-
+      let quantity: number = parseInt(Number(this.quantity).toFixed(0));
+      this.quantity = quantity;
       let order: Order = { ...this.cartItem };
 
-      order.quantity = Number(quantity);
+      order.quantity = parseInt(Number(quantity).toFixed(0));
 
       void this.$store.dispatch('cart/updateOrder', order);
     },

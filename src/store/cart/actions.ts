@@ -12,7 +12,7 @@ const actions = <ActionTree<ICart, StateInterface>>{
   },
   deleteOrder({ commit }, isbn13: string) {
     commit('REMOVE_CART_ORDER', isbn13);
-  }
+  },
 };
 
 export default actions;

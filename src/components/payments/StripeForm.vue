@@ -61,12 +61,15 @@
   </div>
 </template>
 
-<script>
-// https://github.com/stripe/stripe-js
+<script lang="ts">
+//github.com/stripe/stripe-js
 import { loadStripe } from '@stripe/stripe-js/pure';
-export default {
+import { defineComponent } from 'vue';
+import Stripe from 'stripe';
+
+export default defineComponent({
   props: {
-    data: { type: Object, required: false, default: () => {} },
+    data: { type: Object, required: false, default: () => Object },
   },
   data() {
     return {
@@ -98,7 +101,7 @@ export default {
     },
   },
   methods: {
-    async submitForm(e) {
+    async submitForm(e: Event) {
       e.preventDefault();
       try {
         this.loading = true;
@@ -155,7 +158,9 @@ export default {
       },
     };
     if (!this.stripe) {
-      this.stripe = await loadStripe('STRIPE_PUBLIC_KEY_HERE'); //REPLACE THE KEY
+      this.stripe = await loadStripe(
+        'sk_test_51KDtIyET23jqW2iQyrJlrU3Lq3S1sa5FXCeBIJEtoT9AMhzDBVcvE2CbxdxLvziDlMfLtkmFsGDtSk5fjeXfzyPL00z8lni8gs'
+      ); //REPLACE THE KEY
     }
     if (!this.elements) {
       const cardElements = ['cardNumber', 'cardExpiry', 'cardCvc'];
@@ -167,11 +172,11 @@ export default {
       });
     }
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
 .StripeElement--invalid {
   border-color: transparent;
 }
-</style> -->
+</style>

@@ -19,7 +19,7 @@
       <q-separator vertical class="q-ma-md"></q-separator>
       <div>
         <q-item-section style="max-width: 3rem">
-          <q-input outlined v-model="ordered" dense borderless />
+          <q-input v-model="ordered" outlined dense borderless />
         </q-item-section>
         <q-btn
           color="positive"
@@ -56,7 +56,7 @@
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">ISBN: {{ productItem.isbn13 }}</div>
           <q-space />
-          <q-btn icon="close" flat round v-close-popup />
+          <q-btn v-close-popup icon="close" flat round />
         </q-card-section>
 
         <q-card-section>
@@ -73,6 +73,28 @@
               />
             </div>
           </q-img>
+
+          <div v-if="stock == undefined" class="q-pa-md">
+            <q-badge transparent color="accent">
+              quantity: {{ quantity }}
+            </q-badge>
+
+            <q-slider
+              v-model="quantity"
+              :min="0"
+              :max="100"
+              :step="1"
+              label
+              color="primary"
+            ></q-slider
+            ><q-btn
+              v-if="quantity > 0"
+              class="glossy"
+              color="primary"
+              icon="add"
+              @click="addToLocalBookStore()"
+            />
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -81,39 +103,59 @@
 
 <script lang="ts">
 import { Notify } from 'quasar';
-import { defineComponent } from 'vue';
-import { Order } from './models';
+import { defineComponent, PropType } from 'vue';
+import { Order, Book } from './models';
 
 export default defineComponent({
   name: 'BookCard',
+  props: { productItem: { type: Object as PropType<Book>, required: true } },
   data() {
     return {
+      quantity: 0,
       icon: false,
       ordered: 0,
+      stock: this.productItem.stock!,
     };
   },
-  props: ['productItem'],
   methods: {
     addOrder() {
       this.ordered++;
     },
     removeOrder() {
-      if (this.ordered <= 0) return;
       this.ordered--;
     },
     addOrderToCart() {
-      Notify.create({
-        icon: 'check',
-        color: 'primary',
-        message: 'Book added.',
-      });
+      let count = Number(this.ordered);
+
+      if (count > this.stock) {
+        Notify.create({
+          icon: 'cancel',
+          color: 'warning',
+          message: `You tried to order more than books are in stock. We added the maximum of ${this.stock} for you.`,
+        });
+        count = this.stock;
+      } else {
+        Notify.create({
+          icon: 'check',
+          color: 'primary',
+          message: 'Book added.',
+        });
+      }
+
       if (this.productItem === null) return;
-      const count = Number(this.ordered);
+
       if (isNaN(count) || count <= 0) return;
       const newOrder = new Order(this.productItem, count);
 
       void this.$store.dispatch('cart/addOrder', newOrder);
       this.ordered = 0;
+    },
+    addToLocalBookStore() {
+      console.log();
+
+      let productItem: Book = { ...this.productItem };
+      productItem.stock = this.quantity;
+      void this.$store.dispatch('products/addLocalProductItem', productItem);
     },
   },
 });

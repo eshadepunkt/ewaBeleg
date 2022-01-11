@@ -1,14 +1,27 @@
 import { Guid } from 'guid-typescript';
 
 export interface Book {
+  ID?: number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   isbn13: string;
   price: string;
   image: string;
-  url: string;
+  url?: string;
+  authors?: string;
+  publisher?: string;
+  isbn10?: string;
+  pages?: number;
+  year?: number;
+  rating?: string;
+  desc?: string;
+  pdf?: unknown;
+  stock?: number;
 }
 
+export interface PDF {
+  Chapter: string;
+}
 export interface ResponseData {
   books: Book[];
   error: string;
@@ -16,8 +29,22 @@ export interface ResponseData {
   page: string;
 }
 
+export interface SessionResponse {
+  id: string;
+}
+
 export interface Response {
   data: ResponseData;
+}
+
+//export interface ResponseDataLocal {
+//  books: Book[];
+//}
+export interface ResponseSingleItem {
+  data: Book;
+}
+export interface ResponseLocal {
+  data: Book[];
 }
 
 export interface IOrder {

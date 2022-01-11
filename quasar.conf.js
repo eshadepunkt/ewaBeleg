@@ -66,7 +66,7 @@ module.exports = configure(function (ctx) {
       // rtl: true, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
       // showProgress: false,
-      // gzip: true,
+      gzip: true,
       // analyze: true,
 
       // Options below are automatically set depending on the env, set them if you want to override
@@ -82,11 +82,29 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       server: {
-        type: 'http'
+        type: 'http',
+       
+      },
+       proxy: {
+        '/backend': {
+          target: 'http://iws107.informatik.htw-dresden.de/ewa/g08/php',
+          changeOrigin: true,
+          pathRewrite: {
+        '^/backend': ''
+        },
+        
+      },
+        '/checkout': {
+          target: 'http://iws107.informatik.htw-dresden.de/ewa/g08/php',
+          changeOrigin: true,
+          pathRewrite: {
+        '^/checkout': ''
+        },
+        
       },
       port: 8080,
       open: true // opens browser window automatically
-    },
+    }},
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {

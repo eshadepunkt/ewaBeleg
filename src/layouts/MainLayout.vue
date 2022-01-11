@@ -17,7 +17,7 @@
       </q-toolbar>
 
       <q-tabs align="left">
-        <q-route-tab to="/home" label="Home" />
+        <q-route-tab to="/bookshop" label="Bookshop" />
         <q-route-tab to="/catalogue" label="Catalogue" />
 
         <q-route-tab to="/cart" label="Shopping Cart">
@@ -30,10 +30,10 @@
     </q-header>
 
     <q-drawer
+      v-if="quantity > 0"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      v-if="quantity > 0"
     >
       <q-expansion-item
         model-value="expansion"
@@ -51,11 +51,11 @@
           <q-list>
             <q-item-label header> Total: ${{ total }} </q-item-label>
             <q-item
-              class="q-mb-sm no-padding"
               v-for="(item, index) in items"
               :key="index"
+              class="q-mb-sm no-padding"
             >
-              <side-cart-item :cartItem="item" class="full-width" />
+              <side-cart-item :cart-item="item" class="full-width" />
             </q-item>
           </q-list>
         </q-card>
@@ -76,13 +76,6 @@ import SideCartItem from '../components/SideCartItem.vue';
 export default {
   name: 'MainLayout',
   components: { SideCartItem },
-  computed: {
-    ...mapGetters({
-      items: 'cart/cartItems',
-      total: 'cart/cartTotal',
-      quantity: 'cart/cartQuantity',
-    }),
-  },
   setup() {
     const leftDrawerOpen = ref(false);
     const expansion = ref(false);
@@ -93,6 +86,13 @@ export default {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
+  },
+  computed: {
+    ...mapGetters({
+      items: 'cart/cartItems',
+      total: 'cart/cartTotal',
+      quantity: 'cart/cartQuantity',
+    }),
   },
 };
 </script>

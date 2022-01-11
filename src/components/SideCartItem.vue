@@ -26,6 +26,7 @@ import { defineComponent } from 'vue';
 import { Order } from './models';
 export default defineComponent({
   name: 'SideCartItem',
+  props: { cartItem: { type: Order, required: true } },
   data() {
     return {
       //quantity: this.cartItem.quantity,
@@ -42,7 +43,6 @@ export default defineComponent({
       ).toFixed(2);
     },
   },
-  props: { cartItem: { type: Order, required: true } },
 });
 </script>
 

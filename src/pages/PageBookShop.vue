@@ -26,7 +26,7 @@
       </q-input>
 
       <bookcard
-        v-for="(book, index) in products"
+        v-for="(book, index) in productsLocal"
         :key="index"
         :product-item="book"
       ></bookcard>
@@ -45,36 +45,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { mapGetters } from 'vuex';
-import { ResponseData } from 'components/models';
 import Bookcard from 'components/BookCard.vue';
 
 export default defineComponent({
-  name: 'PageCatalogue',
+  name: 'PageBookShop',
 
   components: { Bookcard },
   data() {
     return {
       lookingForBookTitle: '',
-      responseAvailable: false,
-      bookResponse: ref<ResponseData>(),
+
       page: 1,
       total: 1,
     };
   },
+
   computed: {
-    ...mapGetters({ products: 'products/productItems' }),
+    ...mapGetters({
+      productsLocal: 'products/productLocalItems',
+    }),
   },
   created() {
-    this.retrieveNewBooks();
+    this.retrieveBooks();
   },
 
   methods: {
-    retrieveNewBooks() {
-      void this.$store.dispatch('products/getNewProductItems');
+    retrieveBooks() {
       void this.$store.dispatch('products/getLocalProductItems');
-      console.log(this.products);
     },
     retrieveBooksByTitle() {
       void this.$store.dispatch(

@@ -7,4 +7,11 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
-export default apiClient;
+const dbClient: AxiosInstance = axios.create({
+  baseURL: '/backend',
+  headers: {
+    'Content-type': 'application/json',
+  },
+});
+
+export { apiClient as default, dbClient };

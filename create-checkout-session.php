@@ -9,6 +9,8 @@ header('Content-Type: application/json');
 $YOUR_DOMAIN = 'https://iws107.informatik.htw-dresden.de/ewa/G08/ewa/';
 $API_DOMAIN = "https://api.itbook.store/1.0/";
 
+$public_key_for_js = "pk_test_51KDtIyET23jqW2iQaLFmxKgyt9evwqwh7ULN4ZhiOlW8Vbkc1a1uFCpqD2D8ZKXUeRrqrU4Qu1B5Ut59BFgDBodn001VVYoNTv";
+
 $items = [];
 
 foreach (json_decode(file_get_contents('php://input'), true)['items'] as $item) {
@@ -36,11 +38,11 @@ foreach (json_decode(file_get_contents('php://input'), true)['items'] as $item) 
   $items[] = $book_item;
 }
 
-print_r($items);
-echo '-------';
-foreach ($items as $item) {
-  print_r($item);
-}
+// print_r($items);
+// echo '-------';
+// foreach ($items as $item) {
+//   print_r($item);
+// }
 
 $checkout_session = Stripe\Checkout\Session::create([
   'line_items' => $items,
@@ -50,5 +52,4 @@ $checkout_session = Stripe\Checkout\Session::create([
   'cancel_url' => $YOUR_DOMAIN . '?canceled=true',
 ]);
 
-header("HTTP/1.1 303 See Other");
-header("Location: " . $checkout_session->url);
+echo json_encode($checkout_session);

@@ -29,21 +29,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { Order } from 'src/components/models';
+import { defineComponent, ref } from 'vue';
+import { Order, SessionResponse } from 'src/components/models';
 import ShoppingCartItem from 'src/components/ShoppingCartItem.vue';
 import { mapGetters } from 'vuex';
 import axios, { AxiosInstance } from 'axios';
+import { loadStripe, Stripe } from '@stripe/stripe-js/';
 
 export default defineComponent({
   name: 'PageCart',
   components: { ShoppingCartItem },
+  data() {
+    return {
+      loading: false,
+      stripe: ref<Stripe | null>(),
+    };
+  },
   computed: {
     ...mapGetters({
       items: 'cart/cartItems',
       total: 'cart/cartTotal',
       quantity: 'cart/cartQuantity',
     }),
+  },
+  async mounted() {
+    if (!this.stripe) {
+      this.stripe = await loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); //REPLACE THE KEY
+    }
   },
   methods: {
     handleCheck() {
@@ -57,27 +69,38 @@ export default defineComponent({
       );
       console.log(Checkout);
       const apiClient: AxiosInstance = axios.create({
-        baseURL: 'https://iws107.informatik.htw-dresden.de/ewa/g08/php/',
+        baseURL: '/checkout',
         headers: {
           'Content-type': 'application/json',
         },
       });
-      const response: Promise<unknown> = apiClient.post(
-        'create-checkout-session.php',
-        {
-          items: Checkout,
-        }
-      );
+      //this.stripe = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+      // let response: Promise<unknown> = apiClient
+      //   .post('create-checkout-session.php', {
+      //     items: Checkout,
+      //   })
+      //   .then(() => {
+      //     JSON.stringify({});
+      //   });
 
-      // void response.then((response: unknown) => {
-      //   window.location.href =
-      //     (response as Response).headers.get('Location') || '';
-      // });
-      console.log(response);
-      // const location = new Location();
-      // location.href =
-      //   'https://iws107.informatik.htw-dresden.de/ewa/g08/php/create-checkout-session.php';
-      // window.location = location;
+      // let stripObject = stripe.then((phpresponse) => {
+      //   phpresponse?.redirectToCheckout({
+      //     name: response),
+      //   console.log('stripeObj', phpresponse);
+      //   });
+
+      //todo
+      const session = fetch('/create-checkout-session.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      }).then((r) => r.json());
+
+      void this.stripe?.redirectToCheckout({
+        sessionId: session.id,
+      });
     },
   },
 });

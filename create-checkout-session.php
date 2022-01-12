@@ -9,16 +9,15 @@ header('Content-Type: application/json');
 $YOUR_DOMAIN = 'https://iws107.informatik.htw-dresden.de/ewa/G08/ewa/';
 $API_DOMAIN = "https://api.itbook.store/1.0/";
 
-$public_key_for_js = "pk_test_51KDtIyET23jqW2iQaLFmxKgyt9evwqwh7ULN4ZhiOlW8Vbkc1a1uFCpqD2D8ZKXUeRrqrU4Qu1B5Ut59BFgDBodn001VVYoNTv";
-
 $items = [];
 
 foreach (json_decode(file_get_contents('php://input'), true)['items'] as $item) {
   $book_data = file_get_contents($API_DOMAIN . "books/" . $item['isbn']);
 
   if (!$book_data) {
-    // Do something when the request fails
-    //return
+    echo "Error while retrieving book data of book with isbn " . $item['isbn'] . " from IT Book Store API.";
+    http_response_code(500);
+    return;
   }
 
   $book = json_decode($book_data, true);
@@ -38,11 +37,6 @@ foreach (json_decode(file_get_contents('php://input'), true)['items'] as $item) 
   $items[] = $book_item;
 }
 
-// print_r($items);
-// echo '-------';
-// foreach ($items as $item) {
-//   print_r($item);
-// }
 
 $checkout_session = Stripe\Checkout\Session::create([
   'line_items' => $items,

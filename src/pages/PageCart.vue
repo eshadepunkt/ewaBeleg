@@ -29,12 +29,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { Order, SessionResponse } from 'src/components/models';
 import ShoppingCartItem from 'src/components/ShoppingCartItem.vue';
 import { mapGetters } from 'vuex';
 import axios, { AxiosInstance } from 'axios';
-import { loadStripe, Stripe } from '@stripe/stripe-js/';
+import { loadStripe } from '@stripe/stripe-js/';
 
 export default defineComponent({
   name: 'PageCart',
@@ -42,7 +42,6 @@ export default defineComponent({
   data() {
     return {
       loading: false,
-      stripe: ref<Stripe | null>(),
     };
   },
   computed: {
@@ -52,13 +51,8 @@ export default defineComponent({
       quantity: 'cart/cartQuantity',
     }),
   },
-  async mounted() {
-    if (!this.stripe) {
-      this.stripe = await loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); //REPLACE THE KEY
-    }
-  },
   methods: {
-    handleCheck() {
+    async handleCheck() {
       let array = this.items as Order[];
       let Checkout: {
         isbn: string;
@@ -67,40 +61,37 @@ export default defineComponent({
       array.forEach((order: Order) =>
         Checkout.push({ isbn: order.item.isbn13, quantity: order.quantity })
       );
-      console.log(Checkout);
+
+      const stripe = await loadStripe(
+        'pk_test_51KDtIyET23jqW2iQaLFmxKgyt9evwqwh7ULN4ZhiOlW8Vbkc1a1uFCpqD2D8ZKXUeRrqrU4Qu1B5Ut59BFgDBodn001VVYoNTv'
+      );
+
+      if (stripe == null) {
+        // window.location =      //TODO: REDIRECT TO THE FAILURE URL (CREATE SUCCESS AND FAILURE URL FIRST (SET THEM IN PHP-SCRIPT))
+      }
+
       const apiClient: AxiosInstance = axios.create({
         baseURL: '/checkout',
         headers: {
           'Content-type': 'application/json',
         },
       });
-      //this.stripe = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
-      // let response: Promise<unknown> = apiClient
-      //   .post('create-checkout-session.php', {
-      //     items: Checkout,
-      //   })
-      //   .then(() => {
-      //     JSON.stringify({});
-      //   });
 
-      // let stripObject = stripe.then((phpresponse) => {
-      //   phpresponse?.redirectToCheckout({
-      //     name: response),
-      //   console.log('stripeObj', phpresponse);
-      //   });
-
-      //todo
-      const session = fetch('/create-checkout-session.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
-      }).then((r) => r.json());
-
-      void this.stripe?.redirectToCheckout({
-        sessionId: session.id,
-      });
+      apiClient
+        .post('create-checkout-session.php', {
+          items: Checkout,
+        })
+        .then((r) => {
+          let session = r.data as unknown as SessionResponse;
+          if (session.id == undefined) {
+            console.log("Error while creating Stripe Checkout session: ", r.data);   //TODO Maybe display this in an html element, since it is html code 
+            return;
+          }
+          void stripe?.redirectToCheckout({
+            sessionId: session.id,
+          });
+        })
+        .catch((e) => console.log(e));
     },
   },
 });

@@ -37,10 +37,14 @@ export default defineComponent({
       return this.cartItem.quantity;
     },
     total() {
-      return (
-        parseFloat(this.cartItem.item.price.substring(1)) *
-        this.cartItem.quantity
-      ).toFixed(2);
+      let price = null;
+      if (this.cartItem.item.price.charAt(0) === '$') {
+        price = this.cartItem.item.price.substring(1);
+      } else {
+        price = this.cartItem.item.price;
+      }
+
+      return (parseFloat(price) * this.cartItem.quantity).toFixed(2);
     },
   },
 });

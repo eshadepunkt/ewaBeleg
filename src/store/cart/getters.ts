@@ -7,9 +7,13 @@ const getters: GetterTree<ICart, StateInterface> = {
   cartTotal: (state) => {
     return state.cartItems
       .reduce((acc, cartItem) => {
-        return (
-          cartItem.quantity * parseFloat(cartItem.item.price.substring(1)) + acc
-        );
+        let price = null;
+        if (cartItem.item.price.charAt(0) === '$') {
+          price = cartItem.item.price.substring(1);
+        } else {
+          price = cartItem.item.price;
+        }
+        return cartItem.quantity * parseFloat(price) + acc;
       }, 0)
       .toFixed(2);
   },

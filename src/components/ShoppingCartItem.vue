@@ -15,11 +15,16 @@
         }}</q-item-label>
       </q-item-section>
       <q-item-section side middle>
-        <q-item-label caption>
+        <q-item-label v-if="cartItem.item.price.charAt(0) === '$'" caption>
           ${{
             (
               parseFloat(cartItem.item.price.substring(1)) * cartItem.quantity
             ).toFixed(2)
+          }}
+        </q-item-label>
+        <q-item-label v-else caption>
+          ${{
+            (parseFloat(cartItem.item.price) * cartItem.quantity).toFixed(2)
           }}
         </q-item-label>
         <q-item-label caption>{{ cartItem.item.isbn13 }} </q-item-label>

@@ -84,7 +84,10 @@ export default defineComponent({
         .then((r) => {
           let session = r.data as unknown as SessionResponse;
           if (session.id == undefined) {
-            console.log("Error while creating Stripe Checkout session: ", r.data);   //TODO Maybe display this in an html element, since it is html code 
+            console.log(
+              'Error while creating Stripe Checkout session: ',
+              r.data
+            ); //TODO Maybe display this in an html element, since it is html code
             return;
           }
           void stripe?.redirectToCheckout({

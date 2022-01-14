@@ -25,6 +25,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/PageCart.vue'),
         name: 'Cart',
       },
+      {
+        path: '/search',
+        component: () => import('pages/PageSearch.vue'),
+        name: 'Search',
+      },
     ],
   },
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm shadow-1">
+  <div class="q-pa-md shadow-1">
     <q-item clickable dense>
       <q-item-section avatar>
         <q-avatar rounded>
@@ -13,12 +13,58 @@
         }}</q-item-label>
       </q-item-section>
       <q-item-section side middle>
-        <q-item-label caption>{{ productItem.price }} </q-item-label>
+        <q-chip
+          :color="
+            !(productItem.price == '0.00' || productItem.price == '$0.00')
+              ? 'primary'
+              : 'orange'
+          "
+          outline
+          text-color="primary"
+          icon="star"
+          class="full-width"
+        >
+          <q-item-label
+            v-if="
+              !(productItem.price == '0.00' || productItem.price == '$0.00')
+            "
+            class="text-primary"
+            caption
+            >{{ total }}
+          </q-item-label>
+          <q-item-label v-else class="text-warning">FREE </q-item-label>
+          <q-input
+            v-model="ordered"
+            borderless
+            input-class="text-right"
+            style="max-width: 120px"
+            class="q-ml-md full-width"
+          >
+            <template #append>
+              <q-icon
+                v-if="ordered !== 0"
+                name="clear"
+                color="red"
+                class="cursor-pointer"
+                @click="ordered = 0"
+              />
+              <q-icon
+                v-if="ordered !== 0"
+                name="remove_circle"
+                class="cursor-pointer"
+                color="orange"
+                @click="removeOrder()"
+              />
+
+              <q-icon name="add_circle" color="green" @click="addOrder()" />
+            </template>
+          </q-input>
+        </q-chip>
         <q-item-label caption>{{ productItem.isbn13 }} </q-item-label>
       </q-item-section>
-      <q-separator vertical class="q-ma-md"></q-separator>
-      <div>
-        <q-item-section style="max-width: 3rem">
+      <q-separator vertical class="q-ma-sm"></q-separator>
+      <!--<div>
+         <q-item-section style="max-width: 3rem">
           <q-input v-model="ordered" outlined dense borderless />
         </q-item-section>
         <q-btn
@@ -38,10 +84,11 @@
           icon="remove_circle"
           @click="removeOrder()"
         />
-      </div>
+      </div>-->
 
-      <q-item-section side>
+      <q-item-section side :class="ordered > 0 ? 'q-mr-md' : 'q-mr-xl'">
         <q-btn
+          v-if="ordered > 0"
           color="accent"
           round
           dense
@@ -112,10 +159,26 @@ export default defineComponent({
   data() {
     return {
       quantity: 0,
+      text: '',
       icon: false,
       ordered: 0,
       stock: this.productItem.stock!,
     };
+  },
+
+  computed: {
+    total() {
+      let orderCount = 1;
+      if (this.ordered > 0) orderCount = this.ordered;
+      let price = this.productItem.price;
+      if (this.productItem.price.charAt(0) === '$') {
+        price = this.productItem.price.substring(1);
+      } else {
+        price = this.productItem.price;
+      }
+
+      return '$' + (parseFloat(price) * orderCount).toFixed(2).toString();
+    },
   },
   methods: {
     addOrder() {

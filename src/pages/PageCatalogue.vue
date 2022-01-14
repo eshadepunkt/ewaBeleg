@@ -2,52 +2,18 @@
   <q-page class="column">
     <q-item class="text-h4 text-secondary">{{ $route.name }}</q-item>
     <div class="q-ma-xl">
-      <q-input
-        v-model="lookingForBookTitle"
-        bottom-slots
-        placeholder="Search for Booktitle or IBAN"
-        counter
-        maxlength="280"
-      >
-        <template #before>
-          <q-icon name="search" />
-        </template>
-
-        <template #append>
-          <q-btn
-            round
-            dense
-            flat
-            icon="search"
-            :disable="!lookingForBookTitle"
-            @click="retrieveBooksByTitle()"
-          />
-        </template>
-      </q-input>
-
       <bookcard
         v-for="(book, index) in products"
         :key="index"
         :product-item="book"
       ></bookcard>
     </div>
-    <div class="q-pa-lg flex flex-center">
-      <q-pagination
-        v-model="page"
-        color="purple"
-        :max="total"
-        :max-pages="5"
-        boundary-numbers
-        @click="retrievePage()"
-      />
-    </div>
   </q-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { mapGetters } from 'vuex';
-import { ResponseData } from 'components/models';
 import Bookcard from 'components/BookCard.vue';
 
 export default defineComponent({
@@ -56,11 +22,7 @@ export default defineComponent({
   components: { Bookcard },
   data() {
     return {
-      lookingForBookTitle: '',
       responseAvailable: false,
-      bookResponse: ref<ResponseData>(),
-      page: 1,
-      total: 1,
     };
   },
   computed: {
@@ -75,12 +37,6 @@ export default defineComponent({
       void this.$store.dispatch('products/getNewProductItems');
       void this.$store.dispatch('products/getLocalProductItems');
       console.log(this.products);
-    },
-    retrieveBooksByTitle() {
-      void this.$store.dispatch(
-        'products/getProductItemsByTitle',
-        this.lookingForBookTitle
-      );
     },
   },
 });

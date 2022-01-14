@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md shadow-1">
-    <q-item clickable dense>
+  <div class="shadow-1">
+    <q-item clickable dense style="min-height: 75px" class="q-pa-md">
       <q-item-section avatar>
         <q-avatar rounded>
           <img :src="productItem.image" />

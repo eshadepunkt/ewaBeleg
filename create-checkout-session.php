@@ -6,7 +6,7 @@ require __DIR__ . '/stripe/init.php';
 
 header('Content-Type: application/json');
 
-$YOUR_DOMAIN = 'https://iws107.informatik.htw-dresden.de/ewa/G08/ewa/';
+$YOUR_DOMAIN = $_SERVER['HTTP_REFERER'];
 $API_DOMAIN = "https://api.itbook.store/1.0/";
 
 $items = [];
@@ -42,8 +42,8 @@ $checkout_session = Stripe\Checkout\Session::create([
   'line_items' => $items,
 
   'mode' => 'payment',
-  'success_url' => $YOUR_DOMAIN . '?success=true',
-  'cancel_url' => $YOUR_DOMAIN . '?canceled=true',
+  'success_url' => $YOUR_DOMAIN . '#/success?session_id={CHECKOUT_SESSION_ID}',
+  'cancel_url' => $YOUR_DOMAIN . '#/cancel',
 ]);
 
 echo json_encode($checkout_session);

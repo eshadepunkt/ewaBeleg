@@ -30,6 +30,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/PageSearch.vue'),
         name: 'Search',
       },
+      {
+        path: '/success',
+        component: () => import('pages/OrderSuccess.vue'),
+        name: 'OrderSuccess',
+      },
+      {
+        path: '/cancel',
+        component: () => import('pages/OrderCancel.vue'),
+        name: 'OrderCancel',
+      },
     ],
   },
 

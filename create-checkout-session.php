@@ -6,7 +6,7 @@ require __DIR__ . '/stripe/init.php';
 
 header('Content-Type: application/json');
 
-$YOUR_DOMAIN = $_SERVER['HTTP_REFERER'];
+$YOUR_DOMAIN = $_SERVER['HTTP_ORIGIN'];
 $API_DOMAIN = "https://api.itbook.store/1.0/";
 
 $items = [];

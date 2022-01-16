@@ -30,12 +30,14 @@
         <q-space />
         <q-input
           v-model="lookingForBookTitle"
-          label="Search for Booktitle or IBAN"
+          placeholder="Search for Booktitle or IBAN"
           maxlength="280"
           color="white"
-          label-color="white"
+          input-class="text-white"
+          bg-color="primary"
           style="max-width: 580px"
           class="full-width q-pr-xl text-white"
+          standout
         >
           <template #append>
             <q-btn

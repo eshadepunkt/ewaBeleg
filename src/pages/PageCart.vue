@@ -1,6 +1,6 @@
 <template>
   <q-page class="column">
-    <q-item class="text-h4 text-secondary">{{ $route.name }}</q-item>
+    <q-item class="text-h4 text-primary">{{ $route.name }}</q-item>
     <div class="q-ma-sm">
       <q-item-section>
         <q-item v-for="item in items" :key="item.id">

@@ -1,6 +1,6 @@
 {
   "name": "ewabeleg",
-  "version": "0.0.1",
+  "version": "0.0.9",
   "description": "quasar beleg app",
   "productName": "awesome EWA App",
   "author": "Martin Freiberger <s80411@htw-dresden.de>",
@@ -15,6 +15,7 @@
     "@stripe/stripe-js": "^1.22.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "express": "^4.17.2",
     "guid-typescript": "^1.0.9",
     "quasar": "^2.0.0",
     "vuex": "^4.0.1"

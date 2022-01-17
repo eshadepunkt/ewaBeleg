@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow-1">
+  <div class="shadow-1 column">
     <q-item clickable dense style="min-height: 75px" class="q-pa-md">
       <q-item-section avatar>
         <q-avatar rounded>
@@ -12,7 +12,7 @@
           productItem.subtitle
         }}</q-item-label>
       </q-item-section>
-      <q-item-section side middle>
+      <q-item-section side middle column>
         <q-chip
           :color="
             !(productItem.price == '0.00' || productItem.price == '$0.00')
@@ -21,14 +21,14 @@
           "
           outline
           text-color="primary"
+          style="min-width: min-content"
           icon="star"
-          class="full-width"
         >
           <q-item-label
             v-if="
               !(productItem.price == '0.00' || productItem.price == '$0.00')
             "
-            class="text-primary"
+            class="text-primary justify-end"
             caption
             >{{ total }}
           </q-item-label>
@@ -37,8 +37,8 @@
             v-model="ordered"
             borderless
             input-class="text-right"
-            style="max-width: 120px"
-            class="q-ml-md full-width"
+            input-style="max-width: 35px"
+            class="q-ml-sm q-mr-sm"
           >
             <template #append>
               <q-icon
@@ -56,11 +56,15 @@
                 @click="removeOrder()"
               />
 
-              <q-icon name="add_circle" color="green" @click="addOrder()" />
+              <q-icon
+                name="add_circle"
+                color="green"
+                class="q-ml-sm q-mr-sm"
+                @click="addOrder()"
+              />
             </template>
           </q-input>
         </q-chip>
-        <q-item-label caption>{{ productItem.isbn13 }} </q-item-label>
       </q-item-section>
       <q-separator vertical class="q-ma-sm"></q-separator>
       <!--<div>
@@ -99,7 +103,7 @@
       </q-item-section>
     </q-item>
     <q-dialog v-model="icon">
-      <q-card style="width: 600px; max-width: 70vw">
+      <q-card style="width: 600px; max-width: 70vw" class="bg-grey">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">ISBN: {{ productItem.isbn13 }}</div>
           <q-space />
@@ -108,7 +112,7 @@
 
         <q-card-section>
           <q-img :src="productItem.image" sizes="100%">
-            <div class="absolute-bottom text-subtitle1 text-center">
+            <div class="text-subtitle1 text-center no-padding">
               <q-btn
                 align="between"
                 class="btn-fixed-width"
@@ -122,6 +126,10 @@
           </q-img>
 
           <div v-if="stock == undefined" class="q-pa-md">
+            <q-item-label class="text-warning bg-grey q-pa-md shadow-2 q-mb-md"
+              >This is the Admin Panel for adding this Book to the
+              Database</q-item-label
+            >
             <q-badge transparent color="accent">
               quantity: {{ quantity }}
             </q-badge>

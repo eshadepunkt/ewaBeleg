@@ -1,7 +1,7 @@
 <template>
   <q-page class="column">
     <q-item class="text-h4 text-primary">{{ $route.name }}</q-item>
-    <div class="q-ma-xl">
+    <div class="q-ma-xl items-center">
       <bookcard
         v-for="(book, index) in products"
         :key="index"

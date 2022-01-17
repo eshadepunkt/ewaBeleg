@@ -17,6 +17,17 @@
           label="Checkout"
           @click="handleCheck()"
         ></q-btn>
+        <q-toggle
+          v-model="localPay"
+          checked-icon="shop"
+          color="green"
+          :label="
+            localPay
+              ? 'Checkout with local payment'
+              : 'Checkout with wholesale payment'
+          "
+          unchecked-icon="factory"
+        />
       </q-item-label>
       <q-item-label v-if="quantity == 0" header>
         <p>No items in Cart.</p>
@@ -35,6 +46,7 @@ import ShoppingCartItem from 'src/components/ShoppingCartItem.vue';
 import { mapGetters } from 'vuex';
 import axios, { AxiosInstance } from 'axios';
 import { loadStripe } from '@stripe/stripe-js/';
+import { listenerCount } from 'cluster';
 
 export default defineComponent({
   name: 'PageCart',
@@ -42,6 +54,7 @@ export default defineComponent({
   data() {
     return {
       loading: false,
+      localPay: true,
     };
   },
   computed: {
@@ -62,9 +75,15 @@ export default defineComponent({
         Checkout.push({ isbn: order.item.isbn13, quantity: order.quantity })
       );
 
-      const stripe = await loadStripe(
-        'pk_test_51KDtIyET23jqW2iQaLFmxKgyt9evwqwh7ULN4ZhiOlW8Vbkc1a1uFCpqD2D8ZKXUeRrqrU4Qu1B5Ut59BFgDBodn001VVYoNTv'
-      );
+      if (this.localPay) {
+        var stripe = await loadStripe(
+          'pk_test_51KDtIyET23jqW2iQaLFmxKgyt9evwqwh7ULN4ZhiOlW8Vbkc1a1uFCpqD2D8ZKXUeRrqrU4Qu1B5Ut59BFgDBodn001VVYoNTv'
+        );
+      } else {
+        var stripe = await loadStripe(
+          'pk_test_aLcPqdtG2FDzxPWu5N9OBNOs00Yt0nKnhS'
+        );
+      }
 
       if (stripe == null) {
         // window.location =      //TODO: REDIRECT TO THE FAILURE URL (CREATE SUCCESS AND FAILURE URL FIRST (SET THEM IN PHP-SCRIPT))
@@ -80,6 +99,7 @@ export default defineComponent({
       apiClient
         .post('create-checkout-session.php', {
           items: Checkout,
+          local: this.localPay,
         })
         .then((r) => {
           let session = r.data as unknown as SessionResponse;

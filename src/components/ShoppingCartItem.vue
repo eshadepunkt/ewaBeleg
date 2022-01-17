@@ -134,14 +134,14 @@
             v-close-popup
             flat
             label="Cancel"
-            color="primary"
+            color="warning"
             @click="confirm = false"
           />
           <q-btn
             v-close-popup
             flat
             label="Delete"
-            color="warning"
+            color="red"
             @click="deleteOrder()"
           />
         </q-card-actions>

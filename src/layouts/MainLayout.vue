@@ -62,7 +62,7 @@
       bordered
     >
       <q-expansion-item
-        model-value="expansion"
+        default-opened
         expand-separator
         icon="shopping_cart"
         label="Shopping Cart"
@@ -105,10 +105,9 @@ export default defineComponent({
   components: { SideCartItem },
   setup() {
     const leftDrawerOpen = ref(false);
-    const expansion = ref(false);
     return {
       leftDrawerOpen,
-      expansion,
+
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },

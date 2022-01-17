@@ -2,7 +2,9 @@
 
 require __DIR__ . '/stripe/init.php';
 
-\Stripe\Stripe::setApiKey('sk_test_51KDtIyET23jqW2iQyrJlrU3Lq3S1sa5FXCeBIJEtoT9AMhzDBVcvE2CbxdxLvziDlMfLtkmFsGDtSk5fjeXfzyPL00z8lni8gs');
+
+
+//\Stripe\Stripe::setApiKey('sk_test_51KDtIyET23jqW2iQyrJlrU3Lq3S1sa5FXCeBIJEtoT9AMhzDBVcvE2CbxdxLvziDlMfLtkmFsGDtSk5fjeXfzyPL00z8lni8gs');
 
 header('Content-Type: application/json');
 
@@ -10,6 +12,15 @@ $YOUR_DOMAIN = $_SERVER['HTTP_ORIGIN'];
 $API_DOMAIN = "https://api.itbook.store/1.0/";
 
 $items = [];
+$localPay = json_decode(file_get_contents('php://input'), true)['local'];
+
+
+
+if ($localPay) {
+  \Stripe\Stripe::setApiKey('sk_test_51KDtIyET23jqW2iQyrJlrU3Lq3S1sa5FXCeBIJEtoT9AMhzDBVcvE2CbxdxLvziDlMfLtkmFsGDtSk5fjeXfzyPL00z8lni8gs');
+} else {
+  \Stripe\Stripe::setApiKey('sk_test_cFnCai0Ye9NM8Tn9CMo6k0fn00P0R9pt9u');
+}
 
 foreach (json_decode(file_get_contents('php://input'), true)['items'] as $item) {
   $book_data = file_get_contents($API_DOMAIN . "books/" . $item['isbn']);

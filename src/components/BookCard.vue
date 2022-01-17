@@ -114,6 +114,7 @@
           <q-img :src="productItem.image" sizes="100%">
             <div class="text-subtitle1 text-center no-padding">
               <q-btn
+                v-if="productItem.url != undefined"
                 align="between"
                 class="btn-fixed-width"
                 color="accent"
@@ -124,6 +125,8 @@
               />
             </div>
           </q-img>
+
+          <q-item class="bg-white shadow-1">{{ productItem.desc }}</q-item>
 
           <div v-if="stock == undefined" class="q-pa-md">
             <q-item-label class="text-warning bg-grey q-pa-md shadow-2 q-mb-md"

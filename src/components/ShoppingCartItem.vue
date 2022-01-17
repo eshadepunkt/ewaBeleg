@@ -2,7 +2,7 @@
   <div class="q-pa-sm shadow-1">
     <q-item clickable dense>
       <q-item-section avatar>
-        <q-avatar rounded>
+        <q-avatar rounded size="100px">
           <img :src="cartItem.item.image" />
           <q-badge color="orange" floating>{{ cartItem.quantity }}</q-badge>
         </q-avatar>
@@ -58,19 +58,19 @@
           @click="removeOrder()"
         /> -->
 
-        <q-btn-group>
+        <q-btn-group class="column" style="max-width: 3rem">
           <q-btn
-            color="primary"
+            color="green"
             glossy
             text-color="black"
-            label="Add"
+            label=""
             icon="add_circle"
             @click="addOrder()"
           />
-          <div style="max-width: 3rem" class="no-padding">
+          <div class="no-padding">
             <q-input
               v-model="quantity"
-              input-class="text-center"
+              input-class="text-center full-width"
               borderless
               @change="updateOrder()"
             />
@@ -79,15 +79,15 @@
             color="warning"
             glossy
             text-color="black"
-            label="Remove"
-            icon-right="remove_circle"
+            label=""
+            icon="remove_circle"
             @click="removeOrder()"
           />
           <q-btn
             color="red"
             glossy
             text-color="black"
-            label="Clear"
+            label=""
             icon-right="clear"
             @click="confirm = true"
           />
